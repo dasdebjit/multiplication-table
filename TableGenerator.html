@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<title>Learn Multiplication Table</title>
+	
+	<style>
+	
+		body
+		{
+			background-color: #eaf7dc;
+		}
+		
+		h1{text-align: center}
+		
+		.param-input-area{
+			width:500px;
+			height:70px;
+			border:2px solid black;
+			margin: auto
+		}
+		.param-inputs{
+			margin-top:20px;
+			margin-left:10px
+		}
+		
+		.multi-table-area{
+			width:560px;
+			height:auto;
+			border:2px solid blue;
+			margin: auto;
+			margin-top:20px;
+			background-color: #d0f1ac;
+		}
+		.result-row
+		{
+			display: table-row;
+			width: auto;
+			margin-left:30px;
+			margin-right:30px
+		}
+		
+		#multi-table
+		{
+			display: table;
+			border-collapse: collapse;
+		}
+		
+		#multi-table label
+		{
+			display: table-cell;
+			width: 100px;
+			margin-left:15px;
+			margin-right:15px;
+			font: bold 30px arial;
+			text-align:center;
+		}
+		
+		#multi-table input
+		{
+			display: table-cell;
+			width: 80px;
+			margin-left:10px;
+			margin-right:10px;
+			font: bold 30px arial;
+			align:center;
+		}
+		
+	</style>
+
+	<h1>Excercise Multiplication Table With Me!!!</h1>
+</head>
+
+
+
+<body>
+
+<div id="multi-params" class="param-input-area">
+	<div class="param-inputs">
+		<label for="multi-value">Table Number</label>
+		<input type="text" id="multi-value"> </input>
+		<input type="checkbox" id="quiz-mode"> Quiz Mode</input>
+		<input type="checkbox" id="voice-enabled"> Voice</input>
+		<button type="button" onClick="generateTable()"> Start </button>
+	</div>
+</div>
+
+<div id="multi-table" class="multi-table-area">
+	<div id="sec1"> </div>
+</div>
+
+</body>
+
+<script>
+
+var currentIndex = 0;
+
+function generateTable()
+{
+	currentIndex = 0;
+	let isQuizMode = document.querySelector('#quiz-mode').checked;
+	if(isQuizMode == true)
+	{
+		startTableQuiz();
+	}
+	else
+	{
+		startTableAuto();
+	}
+}
+
+
+function startTableAuto()
+{
+	var resultArea = document.getElementById("multi-table");
+	var tableNum = document.getElementById("multi-value").value;
+
+	
+	resultArea.innerHTML = "";
+	for(currentIndex=1; currentIndex<= 10; currentIndex++)
+	{
+		resultArea.innerHTML += `<div class="result-row" indexNum="${currentIndex}"> <label> ${tableNum} </label> <label> X </label> <label> ${currentIndex} </label> <label> = </label> <label> ${tableNum * currentIndex} </label></div>`;
+		
+	}
+}
+
+function startTableQuiz()
+{
+	var resultArea = document.getElementById("multi-table");
+	var tableNum = document.getElementById("multi-value").value;
+	resultArea.innerHTML = "";
+	
+	for(currentIndex=1; currentIndex<= 10; currentIndex++)
+	{
+		resultArea.innerHTML += `<div class="result-row" indexNum="${currentIndex}"> <label> ${tableNum}  </label> <label> X </label>  <label> ${currentIndex} </label>  <label> = </label>  <input type="text" value="" onkeyup="checkRowAnswer(this, event)"> </input> <a href="#" onclick="revealAnswer(this)" tabindex="-1">Show</a> </div>`;
+	}
+	
+}
+
+function checkRowAnswer(row, e)
+{
+	if(e.code != "Enter")
+	{
+		//return;
+	}
+	
+	var indexNum = row.parentElement.getAttribute("indexNum");
+	var tableNum = row.parentElement.children[0].innerHTML;
+	var correctAnswer = tableNum * indexNum;
+	var answer = row.value;
+	
+	if(answer != correctAnswer)
+	{
+		row.style.background="red";
+	}
+	else
+	{
+		row.style.background="lightgreen";
+	}
+	
+	//var keyEvent = document.createEvent("KeyboardEvent");
+	//console.log(keyEvent);
+	//keyEvent.initKeyboardEvent("keypress", true, true, null, false, false, false, false, 9, 0);
+    //row.dispatchEvent(keyEvent);
+		
+	console.log(e);
+//row.style.background = "red";
+}
+
+function revealAnswer(elm)
+{
+	let tableNum = document.getElementById("multi-value").value;
+	let indexNum = elm.parentElement.getAttribute("indexNum");
+	let resultControl = elm.parentElement.children[4];
+	
+	resultControl.value = tableNum * indexNum;
+	resultControl.style.background="lightgreen";
+	
+}
+
+
+function speechInput()
+{
+	var speech = true;
+	window.SpeechRecognition = window.webkitSpeechRecognition;
+	const recognition = new SpeechRecognition();
+	recognition.interimResults = true;
+	
+	recognition.addEventListener('result', e=>{
+		const transcript = Array.from(e.results)
+		.map(result=> result[0])
+		.map(result=>result.transcript)
+		
+		//alert(transcript);
+		document.getElementById("multi-value").value = transcript;
+	})
+	
+	if(speech == true)
+	{
+		recognition.start();
+	}	
+}
+
+</script>
+
+</html>
+
